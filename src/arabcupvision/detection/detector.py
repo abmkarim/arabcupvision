@@ -87,6 +87,8 @@ class Detector:
             fallback.parent.mkdir(parents=True, exist_ok=True)
             self.model = YOLO(str(fallback))  # téléchargé dans models/ si absent
             self.fallback = True
+        # Un modèle de type COCO (classe « person ») est traité comme le repli.
+        self.fallback = self.fallback or "person" in {n.lower() for n in self.model.names.values()}
         self.class_map: dict[int, ObjectClass] = {}
         for idx, name in self.model.names.items():
             if self.fallback and name.lower() not in {"person", "sports ball"}:
@@ -96,7 +98,7 @@ class Detector:
                 self.class_map[int(idx)] = canon
         if not self.class_map:
             raise ValueError(f"Aucune classe exploitable dans le modèle : {self.model.names}")
-        self.model_name = model_path.name if not self.fallback else det_cfg.fallback_model
+        self.model_name = model_path.name if model_path.exists() else det_cfg.fallback_model
 
     def detect(self, frame: np.ndarray):  # noqa: ANN201 - objet Results d'ultralytics
         """Inférence brute sur une image (résultat ultralytics)."""

@@ -31,6 +31,28 @@ def tracks_to_mot(tracks: pd.DataFrame, scale: float = 1.0) -> pd.DataFrame:
     return df
 
 
+def iou_distance(a: np.ndarray, b: np.ndarray, max_distance: float) -> np.ndarray:
+    """Matrice ``1 - IoU`` entre boîtes ``xywh`` ; NaN au-delà de ``max_distance`` (non appariable).
+
+    Équivalent de ``motmetrics.distances.iou_matrix``, compatible NumPy 2.
+    """
+    a = np.asarray(a, dtype=float).reshape(-1, 4)
+    b = np.asarray(b, dtype=float).reshape(-1, 4)
+    if len(a) == 0 or len(b) == 0:
+        return np.empty((len(a), len(b)))
+    ax2, ay2 = a[:, 0] + a[:, 2], a[:, 1] + a[:, 3]
+    bx2, by2 = b[:, 0] + b[:, 2], b[:, 1] + b[:, 3]
+    iw = np.clip(np.minimum(ax2[:, None], bx2[None]) - np.maximum(a[:, None, 0], b[None, :, 0]),
+                 0, None)
+    ih = np.clip(np.minimum(ay2[:, None], by2[None]) - np.maximum(a[:, None, 1], b[None, :, 1]),
+                 0, None)
+    inter = iw * ih
+    union = (a[:, 2] * a[:, 3])[:, None] + (b[:, 2] * b[:, 3])[None] - inter
+    dist = 1.0 - np.divide(inter, union, out=np.zeros_like(inter), where=union > 0)
+    dist[dist > max_distance] = np.nan
+    return dist
+
+
 def evaluate_tracking(gt: pd.DataFrame, hyp: pd.DataFrame, iou_threshold: float = 0.5,
                       frames: list[int] | None = None) -> dict[str, float]:
     """Calcule IDF1, MOTA et le nombre de changements d'identité.
@@ -51,9 +73,8 @@ def evaluate_tracking(gt: pd.DataFrame, hyp: pd.DataFrame, iou_threshold: float 
     for f in frames:
         g = gt_by.get(f, empty)
         h = hyp_by.get(f, empty)
-        dist = mm.distances.iou_matrix(g[["x", "y", "w", "h"]].to_numpy(dtype=float),
-                                       h[["x", "y", "w", "h"]].to_numpy(dtype=float),
-                                       max_iou=1 - iou_threshold)
+        dist = iou_distance(g[["x", "y", "w", "h"]].to_numpy(dtype=float),
+                            h[["x", "y", "w", "h"]].to_numpy(dtype=float), 1 - iou_threshold)
         acc.update(g["id"].tolist(), h["id"].tolist(), dist, frameid=int(f))
     mh = mm.metrics.create()
     summary = mh.compute(acc, metrics=["idf1", "mota", "num_switches", "num_frames"],

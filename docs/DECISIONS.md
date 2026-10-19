@@ -14,3 +14,5 @@
 | 2026-10-19 | Repli COCO : une piste de couleur atypique est un gardien si sa position moyenne est derrière tous les joueurs de champ, sinon un arbitre. | Le modèle COCO ne distingue que `person` ; règle simple, indépendante du cadrage. |
 | 2026-10-19 | Détection et suivi séparés : `predict` puis tracker ByteTrack/BoT-SORT d'ultralytics appelé directement sur les personnes ; le ballon n'est pas suivi (meilleure détection par image). | `model.track` ne renvoie que les pistes confirmées et perdrait le ballon. |
 | 2026-10-19 | Entraînements CPU plafonnés : YOLOv8n et YOLOv8n-pose, imgsz 640, ≤ 12/15 epochs et ≤ 0,9 h chacun (`training/train.yaml`). | Pas de GPU ; un notebook Colab permet de réentraîner plus longtemps. |
+| 2026-10-19 | Matrice de distances IoU réimplémentée pour motmetrics. | `motmetrics.distances.iou_matrix` appelle `np.asfarray`, supprimé dans NumPy 2. |
+| 2026-10-19 | Évaluation de l'application Streamlit par `streamlit.testing.AppTest` (chargement + affichage des résultats d'un traitement) en plus d'un démarrage réel de `streamlit run`. | Vérifie aussi la partie résultats, inaccessible sans import manuel de vidéo. |

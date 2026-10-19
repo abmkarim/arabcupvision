@@ -46,3 +46,16 @@ def test_tracks_to_mot_scale():
                            "x2": [30.0], "y2": [60.0]})
     mot = tracks_to_mot(tracks, scale=0.5)
     np.testing.assert_allclose(mot.iloc[0].to_numpy(), [1, 3, 20, 40, 40, 80])
+
+
+def test_iou_distance_and_tracking_metrics():
+    from arabcupvision.evaluation.tracking_eval import evaluate_tracking, iou_distance
+
+    d = iou_distance(np.array([[0, 0, 10, 10]]), np.array([[0, 0, 10, 10], [5, 0, 10, 10],
+                                                           [50, 50, 5, 5]]), 0.5)
+    assert d[0, 0] == 0.0 and np.isnan(d[0, 1]) and np.isnan(d[0, 2])
+    gt = pd.DataFrame({"frame": [1, 1, 2, 2], "id": [1, 2, 1, 2], "x": [0, 50, 2, 52],
+                       "y": [0, 0, 0, 0], "w": [10, 10, 10, 10], "h": [20, 20, 20, 20]})
+    hyp = gt.assign(id=gt["id"] + 10)
+    m = evaluate_tracking(gt, hyp)
+    assert m["idf1"] == 1.0 and m["mota"] == 1.0 and m["num_switches"] == 0

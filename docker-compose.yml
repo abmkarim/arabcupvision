@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .
+    image: arabcupvision:latest
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+    restart: unless-stopped

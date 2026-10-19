@@ -16,7 +16,8 @@ param(
     [string]$Config = "configs/default.yaml",
     [double]$MaxSeconds = 0,
     [string]$Gt = "",
-    [string]$Labels = ""
+    [string]$Labels = "",
+    [string]$Predictions = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -96,10 +97,11 @@ switch ($Target) {
             Invoke-Py -m arabcupvision.cli eval-tracking --video $Video --gt $Gt --config $Config
         }
         if ($Labels) {
-            Invoke-Py -m arabcupvision.cli eval-teams --labels $Labels --predictions outputs/latest/tracks.csv
+            if (-not $Predictions) { throw "Précisez -Predictions (players.csv ou tracks.csv)." }
+            Invoke-Py -m arabcupvision.cli eval-teams --labels $Labels --predictions $Predictions
         }
         if (-not $Gt -and -not $Labels) {
-            Write-Host "Utilisation : .\tasks.ps1 eval -Video <video> -Gt <gt.txt>  et/ou  -Labels <labels.csv>"
+            Write-Host "Utilisation : .\tasks.ps1 eval -Video <video> -Gt <gt.txt>  et/ou  -Labels <labels.csv> -Predictions <players.csv>"
         }
     }
     "benchmark" {
