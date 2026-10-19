@@ -6,7 +6,7 @@ Analyse automatique de vidéos de football : détection et suivi des joueurs, as
 
 ![Aperçu](docs/images/preview.png)
 
-*Aperçu : capture d'une version antérieure du projet (match Maroc – Syrie, Coupe arabe de la FIFA 2025)*
+*Aperçu : capture (match Maroc – Syrie, Coupe arabe de la FIFA 2025)*
 
 ## Fonctionnalités
 
@@ -129,36 +129,6 @@ docker compose up        # http://localhost:8501
 
 Les dossiers `models/`, `data/` et `outputs/` sont montés en volumes : déposez les poids entraînés dans `models/` pour qu'ils soient proposés dans l'application.
 
-## Évaluation
-
-Les scripts calculent les métriques ; aucun résultat n'est publié ici.
-
-**Suivi (IDF1, MOTA, changements d'identité)** — vérité terrain au format MOTChallenge (`gt.txt`), une ligne par boîte, images numérotées à partir de 1, coordonnées en pixels de la vidéo d'origine :
-
-```
-<frame>,<id>,<x_gauche>,<y_haut>,<largeur>,<hauteur>,1,-1,-1,-1
-```
-
-```powershell
-python -m arabcupvision.cli eval-tracking --gt gt.txt --video data\videos\match.mp4 --max-seconds 30
-python -m arabcupvision.cli eval-tracking --gt gt.txt --predictions outputs\match\tracks.csv --video data\videos\match.mp4
-```
-
-Seules les images traitées sont évaluées (attention au pas d'images). Des outils comme CVAT exportent directement ce format. La vidéo synthétique est accompagnée de sa propre vérité terrain (`synthetic_demo.gt.txt`).
-
-**Équipes** — fichier CSV `track_id,team` où `track_id` reprend les numéros affichés dans la vidéo annotée et `team` est une étiquette libre (`A`/`B`, nom du pays…). La précision est calculée par piste, quelle que soit la numérotation des équipes :
-
-```powershell
-python -m arabcupvision.cli eval-teams --labels labels.csv --predictions outputs\match\players.csv
-```
-
-**Débit** — temps total et temps par étape (détection, suivi, homographie, couleurs, rendu) :
-
-```powershell
-.\tasks.ps1 benchmark -Video data\videos\match.mp4
-python -m arabcupvision.cli benchmark data\videos\match.mp4 --max-seconds 10 --no-render
-```
-
 
 
 ## Structure du projet
@@ -198,4 +168,3 @@ Datasets d'entraînement issus de **Roboflow Universe** (téléchargés par `tra
 
 Les modèles de base YOLOv8 proviennent d'[Ultralytics](https://github.com/ultralytics/ultralytics) (AGPL-3.0).
 
-Les images et vidéos de matchs appartiennent à leurs ayants droit et ne sont pas distribuées : aucune vidéo, aucun poids de modèle ni aucun dataset n'est inclus dans ce dépôt.
