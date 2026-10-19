@@ -16,3 +16,4 @@
 | 2026-10-19 | Entraînements CPU plafonnés : YOLOv8n et YOLOv8n-pose, imgsz 640, ≤ 12/15 epochs et ≤ 0,9 h chacun (`training/train.yaml`). | Pas de GPU ; un notebook Colab permet de réentraîner plus longtemps. |
 | 2026-10-19 | Matrice de distances IoU réimplémentée pour motmetrics. | `motmetrics.distances.iou_matrix` appelle `np.asfarray`, supprimé dans NumPy 2. |
 | 2026-10-19 | Évaluation de l'application Streamlit par `streamlit.testing.AppTest` (chargement + affichage des résultats d'un traitement) en plus d'un démarrage réel de `streamlit run`. | Vérifie aussi la partie résultats, inaccessible sans import manuel de vidéo. |
+| 2026-10-19 | Entraînements CPU interrompus à la demande de l'utilisateur : la démo utilise le repli YOLOv8n COCO et le calibrage de la vidéo synthétique. Les scripts `training/` restent fonctionnels (datasets téléchargés et entraînement validé au démarrage). | Durée d'entraînement CPU jugée trop longue. |

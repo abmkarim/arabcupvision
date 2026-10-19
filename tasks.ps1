@@ -20,7 +20,9 @@ param(
     [string]$Predictions = ""
 )
 
-$ErrorActionPreference = "Stop"
+# Les avertissements écrits sur stderr par Python ne doivent pas interrompre le script :
+# les échecs sont détectés via $LASTEXITCODE.
+$ErrorActionPreference = "Continue"
 Set-Location -Path $PSScriptRoot
 
 $VenvPython = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
