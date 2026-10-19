@@ -159,14 +159,7 @@ python -m arabcupvision.cli eval-teams --labels labels.csv --predictions outputs
 python -m arabcupvision.cli benchmark data\videos\match.mp4 --max-seconds 10 --no-render
 ```
 
-## Limites
 
-- **CPU uniquement** : modèles nano, résolution réduite et entraînements courts ; le traitement d'un match complet reste long. Le pas d'images et la durée maximale permettent de limiter le coût.
-- **Angles de caméra** : le pipeline vise les plans larges de diffusion. Gros plans, ralentis et changements de plan perturbent l'homographie (la dernière homographie valide est alors réutilisée) et coupent les pistes.
-- **Occlusions** : les regroupements de joueurs provoquent des changements d'identité ; les statistiques d'une même personne peuvent être réparties sur plusieurs pistes.
-- **Couleurs de maillots proches** (entre équipes, avec l'arbitre ou la pelouse) : l'assignation par couleur devient ambiguë.
-- **Ballon** : petit et rapide, il est souvent manqué ; l'interpolation ne comble que les trous courts et la possession est une approximation par proximité.
-- **Projection au sol** : le point au sol suppose des pieds au contact du terrain ; la hauteur du ballon n'est pas estimée.
 
 ## Structure du projet
 
