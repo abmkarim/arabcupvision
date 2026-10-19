@@ -1,6 +1,6 @@
 # ArabCupVision
 
-Analyse automatique de vidéos de football : détection et suivi des joueurs, assignation des équipes, projection sur un terrain 2D et statistiques individuelles, le tout exécutable sur un simple CPU.
+Analyse automatique de vidéos de football : détection et suivi des joueurs, assignation des équipes, projection sur un terrain 2D et statistiques individuelles.
 
 ## Aperçu
 
