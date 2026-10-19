@@ -1,0 +1,30 @@
+# Entraînements CPU plafonnés. Augmenter epochs/imgsz sur GPU (voir train_colab.ipynb).
+seed: 42
+device: cpu
+workers: 0
+datasets_dir: data/datasets
+runs_dir: runs/train
+
+jobs:
+  detector:
+    workspace: roboflow-jvuqo
+    project: football-players-detection-3zvbc
+    version: null            # null = dernière version publiée
+    format: yolov8
+    base_model: yolov8n.pt
+    epochs: 12
+    time_hours: 0.9          # plafond de durée (prioritaire sur epochs)
+    imgsz: 640
+    batch: 8
+    output: models/detector.pt
+  keypoints:
+    workspace: roboflow-jvuqo
+    project: football-field-detection-f07vi
+    version: null
+    format: yolov8
+    base_model: yolov8n-pose.pt
+    epochs: 15
+    time_hours: 0.9
+    imgsz: 640
+    batch: 8
+    output: models/pitch_keypoints.pt
